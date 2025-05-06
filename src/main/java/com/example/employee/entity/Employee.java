@@ -12,9 +12,11 @@ public class Employee {
     private String name;
     private String role;
     private Double salary;
-
-    // 👇 This must exist to track who owns the employee entry
     private String ownerUsername;
+
+    // ✅ New fields
+    private String phone;
+    private String address;
 
     // --- Getters and Setters ---
     public Long getId() {
@@ -37,6 +39,14 @@ public class Employee {
         return ownerUsername;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -55,5 +65,13 @@ public class Employee {
 
     public void setOwnerUsername(String ownerUsername) {
         this.ownerUsername = ownerUsername;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

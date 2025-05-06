@@ -1,7 +1,7 @@
 package com.example.employee.service;
 
 import com.example.employee.entity.Employee;
-import com.example.employee.exception.EmployeeNotFoundException; // Import custom exception
+import com.example.employee.exception.EmployeeNotFoundException;
 import com.example.employee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,5 +60,22 @@ public class EmployeeService {
         } else {
             throw new SecurityException("Not authorized to delete this employee");
         }
+    }
+
+    // ✅ NEW: Update phone and address (only by owner, not admin)
+    public Employee updateContactDetails(Long id, String phone, String address, String username) {
+        Employee emp = employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with id " + id + " not found"));
+
+        String normalizedUsername = username.trim().toLowerCase();
+        String normalizedOwnerUsername = emp.getOwnerUsername().trim().toLowerCase();
+
+        if (normalizedOwnerUsername.equals(normalizedUsername)) {
+            emp.setPhone(phone);
+            emp.setAddress(address);
+            return employeeRepository.save(emp);
+        }
+
+        throw new SecurityException("Only the employee can update their phone and address.");
     }
 }

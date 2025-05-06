@@ -47,4 +47,15 @@ public class EmployeeController {
         boolean isAdmin = principal.toString().contains("ROLE_ADMIN");
         employeeService.deleteEmployee(id, principal.getName(), isAdmin);
     }
+
+    // ✅ NEW: Update phone and address — Only by the owner
+    @PutMapping("/{id}/contact")
+    public Employee updateContactDetails(
+            @PathVariable Long id,
+            @RequestParam String phone,
+            @RequestParam String address,
+            Principal principal
+    ) {
+        return employeeService.updateContactDetails(id, phone, address, principal.getName());
+    }
 }
