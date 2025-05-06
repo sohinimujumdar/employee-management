@@ -1,6 +1,7 @@
 package com.example.employee.service;
 
 import com.example.employee.entity.Employee;
+import com.example.employee.exception.EmployeeNotFoundException; // Import custom exception
 import com.example.employee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,18 +23,26 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    // Get employees - all if admin, only own details if not
+    // Get employees - all if admin, all if user (per your new requirement)
     public List<Employee> getEmployees(String username, boolean isAdmin) {
-        return isAdmin ? employeeRepository.findAll()
-                : employeeRepository.findByOwnerUsername(username);
+        return employeeRepository.findAll();
     }
 
-    // Update salary - only if admin or owner
+    // Get employee by ID
+    public Employee getEmployeeById(Long id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with id " + id + " not found"));
+    }
+
+    // Update salary (checks for admin or owner)
     public Employee updateSalary(Long id, Double newSalary, String username, boolean isAdmin) {
         Employee emp = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with id " + id + " not found"));
 
-        if (isAdmin || emp.getOwnerUsername().equals(username)) {
+        String normalizedUsername = username.trim().toLowerCase();
+        String normalizedOwnerUsername = emp.getOwnerUsername().trim().toLowerCase();
+
+        if (isAdmin || normalizedOwnerUsername.equals(normalizedUsername)) {
             emp.setSalary(newSalary);
             return employeeRepository.save(emp);
         }
@@ -41,8 +50,15 @@ public class EmployeeService {
         throw new SecurityException("Not authorized");
     }
 
-    // Delete an employee
-    public void deleteEmployee(Long id) {
-        employeeRepository.deleteById(id);
+    // Delete employee (checks for admin or owner)
+    public void deleteEmployee(Long id, String username, boolean isAdmin) {
+        Employee emp = employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with id " + id + " not found"));
+
+        if (isAdmin || emp.getOwnerUsername().equals(username)) {
+            employeeRepository.deleteById(id);
+        } else {
+            throw new SecurityException("Not authorized to delete this employee");
+        }
     }
 }

@@ -28,32 +28,17 @@ public class SecurityConfig {
         auth.setPasswordEncoder(passwordEncoder());
         return auth;
     }
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/users/register").permitAll()
-//                        .requestMatchers("POST", "/employees/**").hasRole("ADMIN")
-//                        .requestMatchers("DELETE", "/employees/**").hasRole("ADMIN")
-//                        .anyRequest().authenticated()
-//                )
-//                .httpBasic(Customizer.withDefaults());
-//        return http.build();
-//    }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable) // disable CSRF for simplicity (safe for APIs)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register").permitAll() // allow register
-                       // .requestMatchers(HttpMethod.POST, "/api/v1/account/**").hasRole("ADMIN") // ONLY admin
-                       // .requestMatchers(HttpMethod.DELETE, "/api/v1/account/**").hasRole("ADMIN") // ONLY admin
-                        .anyRequest().authenticated() // everything else needs login
+                        .requestMatchers("/api/users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // enables HTTP Basic login
-
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
+
 }
