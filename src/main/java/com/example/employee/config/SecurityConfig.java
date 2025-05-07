@@ -33,9 +33,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                                .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER") // ✅ NEW: Only USER can update their contact
+                                .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
