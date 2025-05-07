@@ -1,12 +1,14 @@
 package com.example.employee.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
+    @NotBlank
     private String username;  // This will be the unique ID
 
     private String password;

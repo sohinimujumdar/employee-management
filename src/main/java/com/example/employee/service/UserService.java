@@ -20,7 +20,7 @@ public class UserService implements UserDetailsService {
 
     public void registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        System.out.println("hi");
+
         userRepository.save(user);
     }
 

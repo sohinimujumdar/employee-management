@@ -3,6 +3,7 @@ import com.example.employee.entity.User;
 import com.example.employee.service.UserService;
 import com.example.employee.entity.*;
 import com.example.employee.service.*;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,7 +16,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody User user) {
+    public void register(@Valid @RequestBody User user) {
         userService.registerUser(user);
     }
 }
