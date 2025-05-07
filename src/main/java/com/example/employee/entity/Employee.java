@@ -13,8 +13,6 @@ public class Employee {
     private String role;
     private Double salary;
     private String ownerUsername;
-
-    // ✅ New fields
     private String phone;
     private String address;
 
