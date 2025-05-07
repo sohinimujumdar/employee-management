@@ -62,7 +62,7 @@ public class EmployeeService {
         }
     }
 
-    // ✅ NEW: Update phone and address (only by owner, not admin)
+    // Update phone and address (only by owner, not admin)
     public Employee updateContactDetails(Long id, String phone, String address, String username) {
         Employee emp = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with id " + id + " not found"));

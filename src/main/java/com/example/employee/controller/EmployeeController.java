@@ -48,7 +48,7 @@ public class EmployeeController {
         employeeService.deleteEmployee(id, principal.getName(), isAdmin);
     }
 
-    // ✅ NEW: Update phone and address — Only by the owner
+    //Update phone and address — Only by the owner
     @PutMapping("/{id}/contact")
     public Employee updateContactDetails(
             @PathVariable Long id,
