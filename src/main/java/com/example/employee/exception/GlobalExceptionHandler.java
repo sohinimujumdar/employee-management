@@ -24,35 +24,36 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         String errorMessage = "Validation failed: " + String.join("; ", errors);
-        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.BAD_REQUEST.value(), errorMessage);
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorDetails(HttpStatus.BAD_REQUEST.value(), errorMessage), HttpStatus.BAD_REQUEST);
     }
 
     // 404 - Not Found: Custom EmployeeNotFoundException
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleEmployeeNotFound(EmployeeNotFoundException ex) {
-        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorDetails(HttpStatus.NOT_FOUND.value(), ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    // 404 - Not Found: ResourceNotFoundException
+    // 404 - Not Found: Generic ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleResourceNotFound(ResourceNotFoundException ex) {
-        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorDetails(HttpStatus.NOT_FOUND.value(), ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    // 403 - Forbidden: Access denied
+    // 403 - Forbidden: Spring Security's AccessDeniedException
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorDetails> handleAccessDenied(AccessDeniedException ex) {
-        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.FORBIDDEN.value(), "Access denied: " + ex.getMessage());
-        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(new ErrorDetails(HttpStatus.FORBIDDEN.value(), "Access denied: " + ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
-    // 500 - Internal Server Error
+    // 403 - Forbidden: Custom UnauthorizedAccessException
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ErrorDetails> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
+        return new ResponseEntity<>(new ErrorDetails(HttpStatus.FORBIDDEN.value(), ex.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    // 500 - Internal Server Error: Catch-all
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleAllExceptions(Exception ex) {
-        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error: " + ex.getMessage());
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error: " + ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
