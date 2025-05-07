@@ -20,7 +20,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+//when the user register the function encrypts password securely
     @Bean
     public DaoAuthenticationProvider authProvider(UserService userService) {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
@@ -28,6 +28,8 @@ public class SecurityConfig {
         auth.setPasswordEncoder(passwordEncoder());
         return auth;
     }
+
+    // allows and disallows the usages
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
