@@ -36,7 +36,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER") // ✅ NEW: Only USER can update their contact
+                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
