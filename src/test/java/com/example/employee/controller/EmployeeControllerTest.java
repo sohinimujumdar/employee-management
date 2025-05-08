@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class EmployeeControllerTest {
     @Mock
@@ -60,6 +60,41 @@ class EmployeeControllerTest {
         assertEquals(2, response.size());
 //        verify(employeeService).getEmployees("jack", true);
     }
+//update salary
+@Test
+void updateSalary_shouldReturnUpdatedEmployee() {
+    Long employeeId = 1L;
+    Double newSalary = 75000.0;
+
+    Employee updatedEmployee = new Employee();
+    updatedEmployee.setId(employeeId);
+    updatedEmployee.setSalary(newSalary);
+
+    when(employeeService.updateSalary(employeeId, newSalary)).thenReturn(updatedEmployee);
+
+    ResponseEntity<Employee> response = employeeController.updateSalary(employeeId, newSalary);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(updatedEmployee, response.getBody());
+    verify(employeeService).updateSalary(employeeId, newSalary);
 }
+    @Test
+    void deleteEmployee_shouldReturnNoContent() {
+        Long employeeId = 1L;
+
+        // Simulate the service layer deletion
+        doNothing().when(employeeService).deleteEmployee(employeeId);
+
+        ResponseEntity<Void> response = employeeController.deleteEmployee(employeeId);
+
+        // Assert that the status code is 204 No Content
+        assertEquals(204, response.getStatusCodeValue());
+
+        // Verify that the service method was called
+        verify(employeeService, times(1)).deleteEmployee(employeeId);
+    }
+
+}
+
 
 

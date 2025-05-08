@@ -6,6 +6,9 @@ import com.example.employee.exception.UnauthorizedAccessException;
 import com.example.employee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -41,26 +44,41 @@ public class EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with id " + id + " not found"));
     }
 
-    // Update salary - Only Admin
-    public Employee updateSalary(Long id, Double newSalary, boolean isAdmin) {
-        if (!isAdmin) {
-            throw new UnauthorizedAccessException("Only admins can update salary.");
-        }
+//    // Update salary - Only Admin
+//    public Employee updateSalary(Long id, Double newSalary, boolean isAdmin) {
+//        if (!isAdmin) {
+//            throw new UnauthorizedAccessException("Only admins can update salary.");
+//        }
+//
+//        Employee emp = getEmployeeById(id);
+//        emp.setSalary(newSalary);
+//        return employeeRepository.save(emp);
+//    }
 
+    // Update salary - Only Admin
+    public Employee updateSalary(Long id, Double newSalary) {
         Employee emp = getEmployeeById(id);
         emp.setSalary(newSalary);
         return employeeRepository.save(emp);
     }
 
-    // Delete employee - Admin or Owner
-    public void deleteEmployee(Long id, String username, boolean isAdmin) {
-        Employee emp = getEmployeeById(id);
-        if (isAdmin || emp.getOwnerUsername().equalsIgnoreCase(username)) {
-            employeeRepository.deleteById(id);
-        } else {
-            throw new UnauthorizedAccessException("Not authorized to delete this employee.");
-        }
+
+//    // Delete employee - Admin or Owner
+//    public void deleteEmployee(Long id, String username, boolean isAdmin) {
+//        Employee emp = getEmployeeById(id);
+//        if (isAdmin || emp.getOwnerUsername().equalsIgnoreCase(username)) {
+//            employeeRepository.deleteById(id);
+//        } else {
+//            throw new UnauthorizedAccessException("Not authorized to delete this employee.");
+//        }
+//    }
+
+    // Delete employee - No access checks
+    public void deleteEmployee(Long id) {
+        Employee emp = getEmployeeById(id); // Ensure employee exists
+        employeeRepository.delete(emp);
     }
+
 
     // Update phone and address - Only by Owner
     public Employee updateContactDetails(Long id, String phone, String address, String username) {
@@ -81,3 +99,6 @@ public class EmployeeService {
         return employeeRepository.save(emp);
     }
 }
+
+
+

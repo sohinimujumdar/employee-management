@@ -2,7 +2,9 @@ package com.example.employee.controller;
 
 import com.example.employee.dto.ContactUpdateRequest;
 import com.example.employee.entity.Employee;
+import com.example.employee.exception.UnauthorizedAccessException;
 import com.example.employee.service.EmployeeService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -53,29 +55,57 @@ public class EmployeeController {
 //        return employeeService.getEmployees(username, isAdmin);
 //    }
 
+//    // Update salary by ID — Admin or the employee can update their salary
+//    @PutMapping("/{id}/salary")
+//    public Employee updateSalary(
+//            @PathVariable Long id,
+//            @RequestParam Double newSalary,
+//            Authentication authentication
+//    ) {
+//        boolean isAdmin = authentication.getAuthorities().stream()
+//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+//
+//        // Ensure employee can only update their own salary unless they are an admin
+//        return employeeService.updateSalary(id, newSalary, isAdmin);
+//    }
+
     // Update salary by ID — Admin or the employee can update their salary
     @PutMapping("/{id}/salary")
-    public Employee updateSalary(
+    public ResponseEntity<Employee> updateSalary(
             @PathVariable Long id,
-            @RequestParam Double newSalary,
-            Authentication authentication
+            @RequestParam Double newSalary
     ) {
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-
-        // Ensure employee can only update their own salary unless they are an admin
-        return employeeService.updateSalary(id, newSalary, isAdmin);
+        try {
+            Employee updatedEmployee = employeeService.updateSalary(id, newSalary);
+            return ResponseEntity.ok(updatedEmployee); // 200 OK with body
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        } catch (UnauthorizedAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build(); // 400 Bad Request
+        }
     }
 
-    // Delete employee — Admin or the employee can delete their own details
+
+
+//    // Delete employee — Admin or the employee can delete their own details
+//    @DeleteMapping("/{id}")
+//    public void deleteEmployee(@PathVariable Long id, Authentication authentication) {
+//        boolean isAdmin = authentication.getAuthorities().stream()
+//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+//
+//        // Ensure only the admin or the employee themselves can delete the employee
+//        employeeService.deleteEmployee(id, authentication.getName(), isAdmin);
+//    }
+
+    // Delete employee — no access check
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable Long id, Authentication authentication) {
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-
-        // Ensure only the admin or the employee themselves can delete the employee
-        employeeService.deleteEmployee(id, authentication.getName(), isAdmin);
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build(); // Returns 204 No Content
     }
+
 
     // Update contact details — Admin or the employee can update their own details
     @PutMapping("/{id}/contact")
