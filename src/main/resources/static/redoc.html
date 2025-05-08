@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redoc - Employee Management API</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        #redoc-container {
+          height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<div id="redoc-container"></div>
+
+<script>
+    const username = "admin";      // <- replace with actual username
+    const password = "adminpass";   // <- replace with actual password
+
+    const authHeader = 'Basic ' + btoa(username + ':' + password);
+
+    Redoc.init("/v1/api-docs", {
+      scrollYOffset: 50,
+      hideDownloadButton: false
+    }, document.getElementById('redoc-container'), {
+      requestInterceptor: (req) => {
+        req.headers['Authorization'] = authHeader;
+        return req;
+      }
+    });
+</script>
+</body>
+</html>

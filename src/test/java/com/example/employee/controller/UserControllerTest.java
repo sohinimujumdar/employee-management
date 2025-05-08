@@ -35,7 +35,8 @@
 //    @Test
 //    void registerUser_shouldReturnCreatedResponse() {
 //        // Mock the userService.registerUser() method to simulate registration
-//        when(userService.registerUser(testUser)).thenReturn(null); // Assuming void method in service
+////        when(userService.registerUser(testUser)).thenReturn(null); // Assuming void method in service
+//        when(userService.registerUser(testUser).thenReturn(void);
 //
 //        // Call the controller's register method
 //        userController.register(testUser);

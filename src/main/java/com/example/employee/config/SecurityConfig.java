@@ -20,7 +20,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-//when the user register the function encrypts password securely
+
     @Bean
     public DaoAuthenticationProvider authProvider(UserService userService) {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
@@ -29,20 +29,21 @@ public class SecurityConfig {
         return auth;
     }
 
-    // allows and disallows the usages
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
-                                .anyRequest().authenticated()
+                        // 🔓 Allow unauthenticated access to API docs and Redoc UI
+                        .requestMatchers("/v3/api-docs", "/swagger-ui.html", "/swagger-ui/**", "/api-docs.html").permitAll() // Allow OpenAPI access
+                        .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
+
         return http.build();
     }
-
 }

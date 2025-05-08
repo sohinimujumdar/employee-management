@@ -1,22 +1,49 @@
 package com.example.employee.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
+@Table(name = "users")
 public class User {
 
     @Id
-    private String username;
+    @NotBlank
+    private String username;  // This will be the unique ID
 
     private String password;
 
-    private String email;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    private String role; // Change this to String if you want to store role as a String
+    // --- Getters and Setters ---
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public enum Role {
+        ADMIN,
+        USER
+    }
 }
