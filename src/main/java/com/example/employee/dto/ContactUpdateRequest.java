@@ -4,6 +4,11 @@ public class ContactUpdateRequest {
     private String phone;
     private String address;
 
+    public ContactUpdateRequest(String phone, String address) {
+        this.phone = phone;
+        this.address = address;
+    }
+
     public String getPhone() {
         return phone;
     }
