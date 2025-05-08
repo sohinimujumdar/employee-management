@@ -20,15 +20,18 @@ public class EmployeeService {
     }
 
     // Create a new employee - Only Admin
-    public Employee createEmployee(Employee employee, boolean isAdmin) {
-        if (!isAdmin) {
-            throw new UnauthorizedAccessException("Only admins can create new employees.");
-        }
+    public Employee createEmployee(Employee employee) {
+//        if (!isAdmin) {
+//            throw new UnauthorizedAccessException("Only admins can create new employees.");
+//        }
         return employeeRepository.save(employee);
     }
 
     // Get all employees
-    public List<Employee> getEmployees(String username, boolean isAdmin) {
+//    public List<Employee> getEmployees(String username, boolean isAdmin) {
+//        return employeeRepository.findAll();
+//    }
+    public List<Employee> getEmployees() {
         return employeeRepository.findAll();
     }
 

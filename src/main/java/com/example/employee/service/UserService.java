@@ -1,6 +1,7 @@
 package com.example.employee.service;
 import com.example.employee.entity.User;
 import com.example.employee.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +19,10 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(User user) {
+    public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        userRepository.save(user);
+       return userRepository.save(user);
     }
 
     @Override

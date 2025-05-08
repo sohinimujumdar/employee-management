@@ -3,6 +3,8 @@ package com.example.employee.controller;
 import com.example.employee.dto.ContactUpdateRequest;
 import com.example.employee.entity.Employee;
 import com.example.employee.service.EmployeeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -22,22 +24,34 @@ public class EmployeeController {
 
     // Create new employee - Only Admin
     @PostMapping
-    public Employee create(@RequestBody Employee employee, Authentication authentication) {
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        return employeeService.createEmployee(employee, isAdmin);
+    public ResponseEntity<Employee> create(@RequestBody Employee employee) {
+//        boolean isAdmin = authentication.getAuthorities().stream()
+//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        if (employee == null) {
+            return ResponseEntity.badRequest().build(); // 400 Bad Request, no body
+        }
+
+        Employee createdEmployee = employeeService.createEmployee(employee); // Call service to create
+        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED); // 201 Created with body
     }
+
+
+    @GetMapping
+    public List<Employee> getAll() {
+        return employeeService.getEmployees();
+    }
+
 
     // Get employees — Admin sees all, User only sees their own details
-    @GetMapping
-    public List<Employee> getAll(Authentication authentication) {
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        String username = authentication.getName();
-
-        // If admin, get all employees, if user, get only their own
-        return employeeService.getEmployees(username, isAdmin);
-    }
+//    @GetMapping
+//    public List<Employee> getAll(Authentication authentication) {
+//        boolean isAdmin = authentication.getAuthorities().stream()
+//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+//        String username = authentication.getName();
+//
+//        // If admin, get all employees, if user, get only their own
+//        return employeeService.getEmployees(username, isAdmin);
+//    }
 
     // Update salary by ID — Admin or the employee can update their salary
     @PutMapping("/{id}/salary")
