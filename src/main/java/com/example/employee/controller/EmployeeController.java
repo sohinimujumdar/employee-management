@@ -25,7 +25,7 @@ public class EmployeeController {
     public ResponseEntity<Employee> create(@RequestBody Employee employee) {
 
         if (employee == null) {
-            return ResponseEntity.badRequest().build(); // 400 Bad Request, no body
+            return ResponseEntity.badRequest().build(); // 400 Bad Request
         }
 
         Employee createdEmployee = employeeService.createEmployee(employee); // Call service to create

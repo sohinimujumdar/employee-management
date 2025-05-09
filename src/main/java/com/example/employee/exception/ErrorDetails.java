@@ -1,5 +1,9 @@
 package com.example.employee.exception;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class ErrorDetails {
     private int statusCode;
     private String message;
@@ -8,20 +12,20 @@ public class ErrorDetails {
         this.statusCode = statusCode;
         this.message = message;
     }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+//
+//    public int getStatusCode() {
+//        return statusCode;
+//    }
+//
+//    public void setStatusCode(int statusCode) {
+//        this.statusCode = statusCode;
+//    }
+//
+//    public String getMessage() {
+//        return message;
+//    }
+//
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
 }

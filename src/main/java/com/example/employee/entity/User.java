@@ -2,11 +2,13 @@ package com.example.employee.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
 public class User {
-
+    @Getter @Setter
     @Id
     @NotBlank
     private String username;  // This will be the unique ID
@@ -17,30 +19,6 @@ public class User {
     private Role role;
 
     // --- Getters and Setters ---
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 
     public enum Role {
         ADMIN,
