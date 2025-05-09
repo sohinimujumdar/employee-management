@@ -1,8 +1,6 @@
 package com.example.employee.controller;
 import com.example.employee.entity.User;
 import com.example.employee.service.UserService;
-import com.example.employee.entity.*;
-import com.example.employee.service.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +15,6 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<String> register(@Valid @RequestBody User user) {
-//
-//        userService.registerUser(user);
-//        return null;
-//    }
-
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody User user) {
         if (user == null) {
@@ -35,5 +26,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("User registered successfully");
     }
-
 }

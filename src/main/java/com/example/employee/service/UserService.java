@@ -1,7 +1,6 @@
 package com.example.employee.service;
 import com.example.employee.entity.User;
 import com.example.employee.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;

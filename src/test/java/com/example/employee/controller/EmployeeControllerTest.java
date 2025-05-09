@@ -2,6 +2,7 @@
 
 package com.example.employee.controller;
 
+import com.example.employee.dto.ContactUpdateRequest;
 import com.example.employee.entity.Employee;
 import com.example.employee.service.EmployeeService;
 import com.example.employee.service.UserService;
@@ -94,6 +95,29 @@ void updateSalary_shouldReturnUpdatedEmployee() {
         verify(employeeService, times(1)).deleteEmployee(employeeId);
     }
 
+    @Test
+    void updateContactDetails_shouldReturnUpdatedEmployee() {
+        Long employeeId = 1L;
+        String newPhone = "1234567890";
+        String newAddress = "123 New Street";
+
+        ContactUpdateRequest request = new ContactUpdateRequest("782837283","street street");
+        request.setPhone(newPhone);
+        request.setAddress(newAddress);
+
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.setId(employeeId);
+        updatedEmployee.setPhone(newPhone);
+        updatedEmployee.setAddress(newAddress);
+
+        when(employeeService.updateContactDetails(employeeId, newPhone, newAddress)).thenReturn(updatedEmployee);
+
+        ResponseEntity<Employee> response = employeeController.updateContactDetails(employeeId, request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedEmployee, response.getBody());
+        verify(employeeService).updateContactDetails(employeeId, newPhone, newAddress);
+    }
 }
 
 

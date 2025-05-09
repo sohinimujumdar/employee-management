@@ -2,14 +2,9 @@ package com.example.employee.service;
 
 import com.example.employee.entity.Employee;
 import com.example.employee.exception.EmployeeNotFoundException;
-import com.example.employee.exception.UnauthorizedAccessException;
 import com.example.employee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.List;
 
 @Service
@@ -24,16 +19,10 @@ public class EmployeeService {
 
     // Create a new employee - Only Admin
     public Employee createEmployee(Employee employee) {
-//        if (!isAdmin) {
-//            throw new UnauthorizedAccessException("Only admins can create new employees.");
-//        }
         return employeeRepository.save(employee);
     }
 
-    // Get all employees
-//    public List<Employee> getEmployees(String username, boolean isAdmin) {
-//        return employeeRepository.findAll();
-//    }
+    //get all employees
     public List<Employee> getEmployees() {
         return employeeRepository.findAll();
     }
@@ -44,34 +33,12 @@ public class EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with id " + id + " not found"));
     }
 
-//    // Update salary - Only Admin
-//    public Employee updateSalary(Long id, Double newSalary, boolean isAdmin) {
-//        if (!isAdmin) {
-//            throw new UnauthorizedAccessException("Only admins can update salary.");
-//        }
-//
-//        Employee emp = getEmployeeById(id);
-//        emp.setSalary(newSalary);
-//        return employeeRepository.save(emp);
-//    }
-
     // Update salary - Only Admin
     public Employee updateSalary(Long id, Double newSalary) {
         Employee emp = getEmployeeById(id);
         emp.setSalary(newSalary);
         return employeeRepository.save(emp);
     }
-
-
-//    // Delete employee - Admin or Owner
-//    public void deleteEmployee(Long id, String username, boolean isAdmin) {
-//        Employee emp = getEmployeeById(id);
-//        if (isAdmin || emp.getOwnerUsername().equalsIgnoreCase(username)) {
-//            employeeRepository.deleteById(id);
-//        } else {
-//            throw new UnauthorizedAccessException("Not authorized to delete this employee.");
-//        }
-//    }
 
     // Delete employee - No access checks
     public void deleteEmployee(Long id) {
@@ -81,12 +48,8 @@ public class EmployeeService {
 
 
     // Update phone and address - Only by Owner
-    public Employee updateContactDetails(Long id, String phone, String address, String username) {
+    public Employee updateContactDetails(Long id, String phone, String address) {
         Employee emp = getEmployeeById(id);
-
-        if (!emp.getOwnerUsername().equalsIgnoreCase(username)) {
-            throw new UnauthorizedAccessException("Only the employee can update their phone and address.");
-        }
 
         if (phone != null && !phone.trim().isEmpty()) {
             emp.setPhone(phone);
@@ -98,6 +61,7 @@ public class EmployeeService {
 
         return employeeRepository.save(emp);
     }
+
 }
 
 

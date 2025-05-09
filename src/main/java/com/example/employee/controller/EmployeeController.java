@@ -7,11 +7,7 @@ import com.example.employee.service.EmployeeService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -27,8 +23,7 @@ public class EmployeeController {
     // Create new employee - Only Admin
     @PostMapping
     public ResponseEntity<Employee> create(@RequestBody Employee employee) {
-//        boolean isAdmin = authentication.getAuthorities().stream()
-//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
         if (employee == null) {
             return ResponseEntity.badRequest().build(); // 400 Bad Request, no body
         }
@@ -37,37 +32,11 @@ public class EmployeeController {
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED); // 201 Created with body
     }
 
-
+    //Get all users
     @GetMapping
     public List<Employee> getAll() {
         return employeeService.getEmployees();
     }
-
-
-    // Get employees — Admin sees all, User only sees their own details
-//    @GetMapping
-//    public List<Employee> getAll(Authentication authentication) {
-//        boolean isAdmin = authentication.getAuthorities().stream()
-//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-//        String username = authentication.getName();
-//
-//        // If admin, get all employees, if user, get only their own
-//        return employeeService.getEmployees(username, isAdmin);
-//    }
-
-//    // Update salary by ID — Admin or the employee can update their salary
-//    @PutMapping("/{id}/salary")
-//    public Employee updateSalary(
-//            @PathVariable Long id,
-//            @RequestParam Double newSalary,
-//            Authentication authentication
-//    ) {
-//        boolean isAdmin = authentication.getAuthorities().stream()
-//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-//
-//        // Ensure employee can only update their own salary unless they are an admin
-//        return employeeService.updateSalary(id, newSalary, isAdmin);
-//    }
 
     // Update salary by ID — Admin or the employee can update their salary
     @PutMapping("/{id}/salary")
@@ -87,18 +56,6 @@ public class EmployeeController {
         }
     }
 
-
-
-//    // Delete employee — Admin or the employee can delete their own details
-//    @DeleteMapping("/{id}")
-//    public void deleteEmployee(@PathVariable Long id, Authentication authentication) {
-//        boolean isAdmin = authentication.getAuthorities().stream()
-//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-//
-//        // Ensure only the admin or the employee themselves can delete the employee
-//        employeeService.deleteEmployee(id, authentication.getName(), isAdmin);
-//    }
-
     // Delete employee — no access check
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
@@ -109,17 +66,16 @@ public class EmployeeController {
 
     // Update contact details — Admin or the employee can update their own details
     @PutMapping("/{id}/contact")
-    public Employee updateContactDetails(
+    public ResponseEntity<Employee> updateContactDetails(
             @PathVariable Long id,
-            @RequestBody ContactUpdateRequest contactRequest,
-            Authentication authentication
+            @RequestBody ContactUpdateRequest contactRequest
     ) {
-        // Ensure only the employee or admin can update contact details
-        return employeeService.updateContactDetails(
+        Employee updatedEmployee = employeeService.updateContactDetails(
                 id,
                 contactRequest.getPhone(),
-                contactRequest.getAddress(),
-                authentication.getName()
+                contactRequest.getAddress()
         );
+        return ResponseEntity.ok(updatedEmployee);
     }
+
 }
