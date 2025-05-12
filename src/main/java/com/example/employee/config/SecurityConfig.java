@@ -29,20 +29,27 @@ public class SecurityConfig {
         return auth;
     }
 
-    // allows and disallows the usages
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
-                                .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/api/users/register",         // allow registration
+                                "/v3/api-docs/**",             // allow OpenAPI JSON
+                                "/swagger-ui/**",              // allow Swagger UI resources
+                                "/swagger-ui.html",            // allow Swagger UI
+                                "/redoc",                      // allow ReDoc UI
+                                "/webjars/**"                  // required for Swagger UI
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
+
 
 }
