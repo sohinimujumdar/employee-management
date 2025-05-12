@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,28 +97,33 @@ void updateSalary_shouldReturnUpdatedEmployee() {
     }
 
     @Test
-    void updateContactDetails_shouldReturnUpdatedEmployee() {
+    void updateContactDetails_shouldReturnUpdatedEmployee() throws AccessDeniedException {
+        // Given
         Long employeeId = 1L;
         String newPhone = "1234567890";
         String newAddress = "123 New Street";
 
-        ContactUpdateRequest request = new ContactUpdateRequest("782837283","street street");
-        request.setPhone(newPhone);
-        request.setAddress(newAddress);
+        // Create request object
+        ContactUpdateRequest request = new ContactUpdateRequest(newPhone, newAddress);
 
+        // Create updated employee object that should be returned by the service
         Employee updatedEmployee = new Employee();
         updatedEmployee.setId(employeeId);
         updatedEmployee.setPhone(newPhone);
         updatedEmployee.setAddress(newAddress);
 
+        // Mocking the service method
         when(employeeService.updateContactDetails(employeeId, newPhone, newAddress)).thenReturn(updatedEmployee);
 
+        // When calling the controller method
         ResponseEntity<Employee> response = employeeController.updateContactDetails(employeeId, request);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedEmployee, response.getBody());
-        verify(employeeService).updateContactDetails(employeeId, newPhone, newAddress);
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());  // Check that status is OK (200)
+        assertEquals(updatedEmployee, response.getBody());     // Check that the body contains the updated employee
+        verify(employeeService).updateContactDetails(employeeId, newPhone, newAddress);  // Verify the service method was called
     }
+
 }
 
 

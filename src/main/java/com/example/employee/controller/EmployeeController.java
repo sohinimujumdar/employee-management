@@ -7,7 +7,10 @@ import com.example.employee.service.EmployeeService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -70,12 +73,18 @@ public class EmployeeController {
             @PathVariable Long id,
             @RequestBody ContactUpdateRequest contactRequest
     ) {
-        Employee updatedEmployee = employeeService.updateContactDetails(
-                id,
-                contactRequest.getPhone(),
-                contactRequest.getAddress()
-        );
-        return ResponseEntity.ok(updatedEmployee);
+        try {
+            Employee updatedEmployee = employeeService.updateContactDetails(
+                    id,
+                    contactRequest.getPhone(),
+                    contactRequest.getAddress()
+            );
+            return ResponseEntity.ok(updatedEmployee);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
