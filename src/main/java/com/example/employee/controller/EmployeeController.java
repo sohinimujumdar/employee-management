@@ -2,34 +2,32 @@ package com.example.employee.controller;
 
 import com.example.employee.dto.ContactUpdateRequest;
 import com.example.employee.entity.Employee;
-import com.example.employee.exception.UnauthorizedAccessException;
-import com.example.employee.service.EmployeeService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.persistence.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.ArrayList;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
-    }
-
-    // Create new employee - Only Admin
+    // Create new employee — mock hardcoded response
+    @PostMapping
     @Operation(
             summary = "Create a new employee",
             description = "Allows only ADMINs to create a new employee.",
@@ -70,23 +68,32 @@ public class EmployeeController {
                     ),
             }
     )
-    @PostMapping
-    public ResponseEntity<?> create(@RequestBody Employee employee) {
-        try {
-            if (employee == null) {
-                return ResponseEntity.badRequest().build();
+    public ResponseEntity<Employee> create(@RequestBody Employee employee) throws JsonProcessingException {
+        log.info("Received request to create employee: {}", employee);
 
+        String json = """
+            {
+                "id": 100,
+                "name": "%s",
+                "role": "%s",
+                "salary": %.2f,
+                "phone": "%s",
+                "address": "%s"
             }
+        """.formatted(
+                employee.getName(),
+                employee.getRole(),
+                employee.getSalary(),
+                employee.getPhone(),
+                employee.getAddress()
+        );
 
-            Employee createdEmployee = employeeService.createEmployee(employee);
-            return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED); // 201
-
-        } catch (UnauthorizedAccessException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
-        }
+        Employee mockEmployee = objectMapper.readValue(json, Employee.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mockEmployee);
     }
 
-    // Get all users
+    // Get all employees — mock list
+    @GetMapping
     @Operation(
             summary = "Get all employees",
             description = "Retrieves a list of all registered employees.",
@@ -110,19 +117,30 @@ public class EmployeeController {
                     )
             }
     )
-    @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<List<Employee>> getAll() {
+        List<Employee> mockList = new ArrayList<>();
+
         try {
-            List<Employee> employees = employeeService.getEmployees();
-            return ResponseEntity.ok(employees);
-        } catch (IllegalArgumentException e) {
-            //return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            return ResponseEntity.badRequest().build();
+            String json = """
+                [{
+                    "id": 101,
+                    "name": "John Doe",
+                    "role": "USER",
+                    "salary": 55000.0,
+                    "phone": "9876543210",
+                    "address": "123 Mock Street"
+                }]
+            """;
+            mockList.add(objectMapper.readValue(json, Employee.class));
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+
+        return ResponseEntity.ok(mockList);
     }
 
-
-    // Update salary by ID — Admin or the employee can update their salary
+    // Update salary — mock response with new salary
+    @PutMapping("/{id}/salary")
     @Operation(
             summary = "Update employee salary",
             description = "Allows ADMIN or the employee to update the employee's salary.",
@@ -172,24 +190,28 @@ public class EmployeeController {
                     )
             }
     )
-    @PutMapping("/{id}/salary")
     public ResponseEntity<Employee> updateSalary(
             @PathVariable Long id,
             @RequestParam Double newSalary
-    ) {
-        try {
-            Employee updatedEmployee = employeeService.updateSalary(id, newSalary);
-            return ResponseEntity.ok(updatedEmployee); // 200 OK
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build(); // 404
-        } catch (UnauthorizedAccessException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build(); // 400
-        }
+    ) throws JsonProcessingException {
+        log.info("Updating salary for employee {} to {}", id, newSalary);
+
+        String json = """
+            {
+                "id": %d,
+                "name": "Updated User",
+                "role": "USER",
+                "salary": %.2f,
+                "phone": "9999999999",
+                "address": "Updated Lane"
+            }
+        """.formatted(id, newSalary);
+
+        Employee updated = objectMapper.readValue(json, Employee.class);
+        return ResponseEntity.ok(updated);
     }
 
-    // Delete employee — no access check
+    // Delete employee — return 204 No Content
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete an employee by ID",
@@ -217,12 +239,13 @@ public class EmployeeController {
             }
     )
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        employeeService.deleteEmployee(id);
-        return ResponseEntity.noContent().build(); // Returns 204 No Content
+        log.info("Mock delete employee with id {}", id);
+        return ResponseEntity.noContent().build();
     }
 
+    // Update contact details — mock contact update
+    @PutMapping("/{id}/contact")
 
-    // Update contact details — Admin or the employee can update their own details
     @Operation(
             summary = "Update employee contact details",
             description = "Allows ADMIN or the employee themselves to update contact information such as phone and address.",
@@ -273,27 +296,24 @@ public class EmployeeController {
                     )
             }
     )
-    @PutMapping("/{id}/contact")
-    public ResponseEntity<?> updateContactDetails(
+    public ResponseEntity<Employee> updateContactDetails(
             @PathVariable Long id,
             @RequestBody ContactUpdateRequest contactRequest
-    ) {
-        try {
-            if (contactRequest == null || contactRequest.getPhone() == null || contactRequest.getAddress() == null) {
-                return ResponseEntity.badRequest().build(); // 400
+    ) throws JsonProcessingException {
+        log.info("Updating contact for employee {} with data: {}", id, contactRequest);
+
+        String json = """
+            {
+                "id": %d,
+                "name": "Contact Updated User",
+                "role": "USER",
+                "salary": 60000.0,
+                "phone": "%s",
+                "address": "%s"
             }
+        """.formatted(id, contactRequest.getPhone(), contactRequest.getAddress());
 
-            Employee updatedEmployee = employeeService.updateContactDetails(
-                    id,
-                    contactRequest.getPhone(),
-                    contactRequest.getAddress()
-            );
-            return ResponseEntity.ok(updatedEmployee); // 200
-
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().build(); // 400
-        }
+        Employee updated = objectMapper.readValue(json, Employee.class);
+        return ResponseEntity.ok(updated);
     }
 }
