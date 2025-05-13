@@ -106,15 +106,6 @@ public class EmployeeController {
                                     schema = @Schema(implementation = Employee.class)
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Bad request",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ErrorResponse.class),
-                                    examples = @ExampleObject(value = "{\"message\": \"Invalid request parameters\"}")
-                            )
-                    )
             }
     )
     public ResponseEntity<List<Employee>> getAll() {
