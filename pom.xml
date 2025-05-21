@@ -27,6 +27,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+<!--		for s3 config through presigned urls-->
+		<!-- Core AWS SDK -->
 
 		<!-- JPA and Hibernate -->
 		<dependency>
@@ -131,15 +133,31 @@
 					<target>21</target> <!-- Set target compatibility to JDK 21 -->
 				</configuration>
 			</plugin>
-			<!-- Maven Surefire Plugin for Tests -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version> <!-- Update to a compatible version -->
-				<configuration>
-					<reportFormat>plain</reportFormat>
-				</configuration>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>com/example/employee/exception/*</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>
