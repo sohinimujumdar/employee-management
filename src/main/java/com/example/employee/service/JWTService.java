@@ -1,10 +1,50 @@
 package com.example.employee.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+//import static jdk.jfr.internal.EventWriterKey.getKey;
 
 @Service
 public class JWTService {
-    public String generateToken(){
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
+    private String secretkey = "";
+    public JWTService(){
+        try {
+            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+            SecretKey sk = keyGen.generateKey();
+            secretkey = Base64.getEncoder().encodeToString(sk.getEncoded());
+
+        } catch (NoSuchAlgorithmException e){
+            throw new RuntimeException(e);
+        }
+    }
+    public String generateToken(String Username){
+
+        Map<String, Object> claims = new HashMap<>();
+
+        return Jwts.builder()
+                .claims()
+                .add(claims)
+                .subject(Username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .and()
+                .signWith(getKey())
+                .compact();
+    }
+    private Key getKey(){
+        byte[] keyBytes = Decoders.BASE64.decode(secretkey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

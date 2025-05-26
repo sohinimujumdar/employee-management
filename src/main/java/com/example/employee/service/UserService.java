@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
                         new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
                 );
         if(authentication.isAuthenticated())
-            return jwtService.generateToken();
+            return jwtService.generateToken(user.getUsername());
         return "fail";
     }
 
