@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Employees</title></head>
+<body>
+<h1>Employee List</h1>
+<a href="/employees/create">Create Employee</a>
+<table border="1">
+    <tr><th>ID</th><th>Name</th><th>Role</th><th>Actions</th></tr>
+    <tr th:each="emp : ${employees}">
+        <td th:text="${emp.id}">1</td>
+        <td th:text="${emp.name}">John Doe</td>
+        <td th:text="${emp.role}">USER</td>
+        <td>
+            <a th:href="@{'/employees/' + ${emp.id}}">View</a> |
+            <a th:href="@{'/employees/edit/' + ${emp.id}}">Edit</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
