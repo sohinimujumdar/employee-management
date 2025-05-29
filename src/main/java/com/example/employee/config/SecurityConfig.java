@@ -32,13 +32,14 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for REST APIs (adjust if needed)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register").permitAll() // Allow registration without auth
+                        .requestMatchers("/login","/post-login", "/api/users/register", "/error", "/oauth2/**").permitAll() // add /login and /oauth2/**
                         .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
                         .anyRequest().authenticated()
                 )
+
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .defaultSuccessUrl("/post-login", true)
@@ -56,7 +57,7 @@ public class SecurityConfig {
     // JwtDecoder bean configured with issuer URI from Okta properties
     @Bean
     public JwtDecoder jwtDecoder(OAuth2ClientProperties properties) {
-        String issuerUri = properties.getProvider().get("okta").getIssuerUri();
+        String issuerUri = properties.getProvider().get("auth0").getIssuerUri();
         return JwtDecoders.fromIssuerLocation(issuerUri);
     }
 
@@ -65,7 +66,7 @@ public class SecurityConfig {
     public JwtAuthenticationConverter customJwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Spring Security expects roles prefixed with "ROLE_"
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("groups");
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // Spring expects roles like ROLE_ADMIN
 
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
         jwtConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
