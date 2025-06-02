@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.Customizer;
+//import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 @Configuration
@@ -65,11 +65,14 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter customJwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Spring Security expects roles prefixed with "ROLE_"
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // Spring expects roles like ROLE_ADMIN
+
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("https://excelfore.com/claims/roles");
+
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
         jwtConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtConverter;
     }
+
 }

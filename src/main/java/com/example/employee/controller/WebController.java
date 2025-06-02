@@ -1,8 +1,8 @@
 package com.example.employee.controller;
 
-
 import com.example.employee.entity.Employee;
 import com.example.employee.service.EmployeeService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,30 +32,24 @@ public class WebController {
         return "employee-details";
     }
 
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "employee-form";
+    // Exception handler for when employee not found
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String handleEntityNotFound(EntityNotFoundException ex, Model model) {
+        model.addAttribute("errorMessage", "Employee not found.");
+        return "error/404";  // Return a custom 404 error view
     }
 
-    @PostMapping("/create")
-    public String createEmployee(@ModelAttribute Employee employee) {
-        employeeService.createEmployee(employee);
-        return "redirect:/employees";
+    // Exception handler for access denied
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDenied(AccessDeniedException ex, Model model) {
+        model.addAttribute("errorMessage", "You do not have permission to access this resource.");
+        return "error/403";  // Return a custom 403 error view
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        Employee employee = employeeService.getEmployeeById(id);
-        model.addAttribute("employee", employee);
-        return "employee-form";
+    // Generic exception handler (optional)
+    @ExceptionHandler(Exception.class)
+    public String handleGeneralException(Exception ex, Model model) {
+        model.addAttribute("errorMessage", "An unexpected error occurred.");
+        return "error/error";  // Return a generic error page
     }
-
-    @PostMapping("/edit/{id}")
-    public String updateEmployee(@PathVariable Long id, @ModelAttribute Employee employee) throws AccessDeniedException {
-        employee.setId(id);
-        employeeService.updateContactDetails(id, employee.getPhone(), employee.getAddress());
-        return "redirect:/employees/" + id;
-    }
-
 }

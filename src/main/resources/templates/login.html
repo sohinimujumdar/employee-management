@@ -2,9 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        a.login-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0079ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        a.login-button:hover {
+            background-color: #005fcc;
+        }
+    </style>
 </head>
 <body>
-<h2>Login with Okta</h2>
-<a href="/oauth2/authorization/auth0">Login</a>
+<div class="login-container">
+    <h2>Login with Okta</h2>
+    <a href="/oauth2/authorization/auth0" class="login-button">Login</a>
+</div>
 </body>
 </html>
