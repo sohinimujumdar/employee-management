@@ -4,6 +4,7 @@ import com.example.employee.repository.UserRepository;
 import org.apache.catalina.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.*;
@@ -23,6 +24,7 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     AuthenticationManager authManager;
+
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -45,13 +47,19 @@ public class UserService implements UserDetailsService {
     }
 
     public String verify(User user, AuthenticationManager authManager) {
-        Authentication authentication =
-                authManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-                );
-        if(authentication.isAuthenticated())
-            return jwtService.generateToken(user.getUsername());
-        return "fail";
+        try {
+            Authentication authentication =
+                    authManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+                    );
+            if (authentication.isAuthenticated())
+                return jwtService.generateToken(user.getUsername());
+            return "fail";
+        } catch (
+                BadCredentialsException e) {
+            return "Invalid username or password";
+        } catch (Exception e) {
+            return "Authentication failed";
+        }
     }
-
 }

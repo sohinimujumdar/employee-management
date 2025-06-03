@@ -30,6 +30,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("User registered successfully");
     }
+
+
     @PostMapping("/login")
     public String login(@RequestBody User user) throws Exception {
         AuthenticationManager authManager = authenticationManager(); // get from config

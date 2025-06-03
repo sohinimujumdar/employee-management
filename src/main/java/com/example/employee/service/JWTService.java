@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
@@ -17,11 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-//import static jdk.jfr.internal.EventWriterKey.getKey;
 
 @Service
 public class JWTService {
     private String secretkey = "";
+
     public JWTService(){
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
@@ -32,23 +31,36 @@ public class JWTService {
             throw new RuntimeException(e);
         }
     }
-    public String generateToken(String Username){
 
-        Map<String, Object> claims = new HashMap<>();
 
-        return Jwts.builder()
-                .claims()
-                .add(claims)
-                .subject(Username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
-                .and()
-                .signWith(getKey())
-                .compact();
+    // Generate JWT token for the given username
+    public String generateToken(String username) {
+        try {
+            Map<String, Object> claims = new HashMap<>();
+
+            return Jwts.builder()
+                    .claims()
+                    .add(claims)
+                    .subject(username)
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 minutes
+                    .and()
+                    .signWith(getKey())
+                    .compact();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate JWT token", e);
+        }
     }
-    private SecretKey getKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(secretkey);
-        return Keys.hmacShaKeyFor(keyBytes);
+
+    // Decode the base64 string to get the actual secret key for signing
+    private SecretKey getKey() {
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(secretkey);
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to decode secret key", e);
+        }
     }
 
     public String extractUsername(String token) {
