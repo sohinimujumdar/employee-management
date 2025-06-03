@@ -31,25 +31,4 @@ public class WebController {
         model.addAttribute("employee", employee);
         return "employee-details";
     }
-
-    // Exception handler for when employee not found
-    @ExceptionHandler(EntityNotFoundException.class)
-    public String handleEntityNotFound(EntityNotFoundException ex, Model model) {
-        model.addAttribute("errorMessage", "Employee not found.");
-        return "error/404";  // Return a custom 404 error view
-    }
-
-    // Exception handler for access denied
-    @ExceptionHandler(AccessDeniedException.class)
-    public String handleAccessDenied(AccessDeniedException ex, Model model) {
-        model.addAttribute("errorMessage", "You do not have permission to access this resource.");
-        return "error/403";  // Return a custom 403 error view
-    }
-
-    // Generic exception handler (optional)
-    @ExceptionHandler(Exception.class)
-    public String handleGeneralException(Exception ex, Model model) {
-        model.addAttribute("errorMessage", "An unexpected error occurred.");
-        return "error/error";  // Return a generic error page
-    }
 }
