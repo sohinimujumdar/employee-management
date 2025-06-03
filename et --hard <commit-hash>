@@ -1,0 +1,119 @@
+[33mcommit 93bfb0f080538936b96449ca945755e31b85c9d3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/employee-management-ssl[m[33m)[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Tue Jun 3 12:46:15 2025 +0530
+
+    server side certs exchange
+
+[33mcommit 90170114e2cf806b427710c521f4126b2d27cdbe[m[33m ([m[1;31morigin/employee-management-fluentd[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32memployee-management-fluentd[m[33m)[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 21 14:21:50 2025 +0530
+
+    Final commit
+
+[33mcommit 519656dc0e9f3140823b035a3ff7016e27059b05[m[33m ([m[1;31morigin/feature/employee-crud-testing[m[33m)[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Mon May 12 12:32:32 2025 +0530
+
+    exception
+
+[33mcommit 45f15d1a5f109ad98cbd4437f24747be40333567[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Fri May 9 18:32:13 2025 +0530
+
+    todays commit final
+
+[33mcommit 464819abc26a8f1198032c9d0c144b672545e813[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Fri May 9 10:23:36 2025 +0530
+
+    testing commit with Employee Management System code
+
+[33mcommit 1d124098a8187921d2fed5fe71974b8bfa62b423[m[33m ([m[1;31morigin/your-branch-name[m[33m)[m
+Author: sohinimujumdar <sohini.mujumdar@gmail.com>
+Date:   Thu May 8 23:44:05 2025 +0530
+
+    Fixed EmployeeController and EmployeeService logic, updated tests
+
+[33mcommit 8d33ca31d96aa20b833a5b95715a8008ce73a4d3[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Thu May 8 18:32:12 2025 +0530
+
+    exception
+
+[33mcommit 894db21d1a5469ed03009baff6bd00d2ca86d3da[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Thu May 8 15:36:21 2025 +0530
+
+    exception
+
+[33mcommit 0ec403a068bb838cc8a985110306668b034aea9e[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Thu May 8 11:49:27 2025 +0530
+
+    exception
+
+[33mcommit 363a61af55bc175d60630215ca2afeb87efc933c[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 18:07:33 2025 +0530
+
+    exception
+
+[33mcommit 42813ad84c847c654ffde60b019368ba9b4d138a[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 15:07:06 2025 +0530
+
+    exception
+
+[33mcommit 96fe0397f6b4c31388e6e8ace023bb9a5d7f57cb[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 12:39:16 2025 +0530
+
+    exception
+
+[33mcommit 5cfb01381e0ea254d215b61fc88bba39c823133b[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 12:19:16 2025 +0530
+
+    exception
+
+[33mcommit 08e2c1031d877a8eb25a7ba3e2affa1a39838153[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 10:17:51 2025 +0530
+
+    exception
+
+[33mcommit 7c3e80f35efb60d7a96d39ac9e560364b41de151[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 10:17:13 2025 +0530
+
+    exception
+
+[33mcommit 776dcff1681d8a36c38b12ea4689c832b4e199fc[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 10:01:01 2025 +0530
+
+    exception
+
+[33mcommit 4890dd6f090b3bc24e704914b2654f4f55c5e627[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Wed May 7 09:57:24 2025 +0530
+
+    exception
+
+[33mcommit e9c89e94c498eb15775b471721d9e3f809c0d614[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Tue May 6 17:30:43 2025 +0530
+
+    exception
+
+[33mcommit b5d36398a853abde3cf1f8a702291bb6ef409d15[m
+Author: sohini.mujumdar@gmail.com <sohini.mujumdar@gmail.com>
+Date:   Tue May 6 17:01:34 2025 +0530
+
+    exception
+
+[33mcommit d66a375a12c3ef9ba6e16bed384c1f8dc9fc65fd[m
+Author: sohinimujumdar <sohini.mujumdar@gmail.com>
+Date:   Tue May 6 11:02:28 2025 +0530
+
+    Employee-management
