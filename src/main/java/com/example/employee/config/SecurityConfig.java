@@ -27,6 +27,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 //when the user register the function encrypts password securely
     @Bean
     public DaoAuthenticationProvider authProvider(UserService userService) {
