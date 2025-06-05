@@ -27,7 +27,8 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-//when the user register the function encrypts password securely
+
+    //when the user register the function encrypts password securely
     @Bean
     public DaoAuthenticationProvider authProvider(UserService userService) {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
@@ -41,21 +42,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/employee/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/api/users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .saml2Login(saml -> saml
+                        .loginPage("/saml2/authenticate/okta-saml")
                         .authenticationConverter(authentication -> {
                             Saml2Authentication samlAuth = (Saml2Authentication) authentication;
                             Saml2AuthenticatedPrincipal principal = (Saml2AuthenticatedPrincipal) samlAuth.getPrincipal();
 
-                            // Get role from SAML attribute
-                            String role = (String) principal.getFirstAttribute("role");
+                            String role = principal.getFirstAttribute("role");
+                            if (role == null) {
+                                role = "USER";
+                            }
 
-                            // Convert to Spring Security authority
-                            List<GrantedAuthority> authorities = Collections.singletonList(
+                            List<GrantedAuthority> authorities = List.of(
                                     new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
                             );
 
@@ -65,5 +72,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }
