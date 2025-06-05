@@ -1,18 +1,18 @@
 package com.example.employee.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
+
     @GetMapping("/")
-    public String home() {
-        return """
-                <html>
-                <body>
-                    <a href="/saml2/authenticate/okta">Login with SAML 2.0</a>
-                </body>
-                </html>
-                """;
+    public String home(@AuthenticationPrincipal Saml2AuthenticatedPrincipal principal, Model model) {
+        model.addAttribute("name", principal.getName());
+        model.addAttribute("email", principal.getFirstAttribute("email"));
+        return "home";
     }
 }

@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .saml2Login(saml -> saml
-                        .loginPage("/saml2/authenticate/okta-saml")
+                        .loginPage("/saml2/authenticate/okta")
                         .authenticationConverter(authentication -> {
                             Saml2Authentication samlAuth = (Saml2Authentication) authentication;
                             Saml2AuthenticatedPrincipal principal = (Saml2AuthenticatedPrincipal) samlAuth.getPrincipal();
