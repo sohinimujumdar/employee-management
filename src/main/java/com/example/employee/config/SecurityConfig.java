@@ -8,9 +8,16 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -30,18 +37,32 @@ public class SecurityConfig {
     }
 
     // allows and disallows the usages
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
-                                .anyRequest().authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/employee/**").hasRole("EMPLOYEE")
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
+                .saml2Login(saml -> saml
+                        .authenticationConverter(authentication -> {
+                            Saml2Authentication samlAuth = (Saml2Authentication) authentication;
+                            Saml2AuthenticatedPrincipal principal = (Saml2AuthenticatedPrincipal) samlAuth.getPrincipal();
+
+                            // Get role from SAML attribute
+                            String role = (String) principal.getFirstAttribute("role");
+
+                            // Convert to Spring Security authority
+                            List<GrantedAuthority> authorities = Collections.singletonList(
+                                    new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
+                            );
+
+                            return new Saml2Authentication(principal, samlAuth.getSaml2Response(), authorities);
+                        })
+                );
+
         return http.build();
     }
 

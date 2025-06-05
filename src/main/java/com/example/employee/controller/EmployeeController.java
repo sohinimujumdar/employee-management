@@ -5,8 +5,10 @@ import com.example.employee.entity.Employee;
 import com.example.employee.exception.UnauthorizedAccessException;
 import com.example.employee.service.EmployeeService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,7 @@ public class EmployeeController {
 
     // Create new employee - Only Admin
     @PostMapping
-    public ResponseEntity<Employee> create(@RequestBody Employee employee) {
+    public ResponseEntity<Employee> create(@Valid @RequestBody Employee employee) {
 
         if (employee == null) {
             return ResponseEntity.badRequest().build(); // 400 Bad Request
@@ -60,6 +62,7 @@ public class EmployeeController {
     }
 
     // Delete employee — no access check
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
@@ -71,7 +74,7 @@ public class EmployeeController {
     @PutMapping("/{id}/contact")
     public ResponseEntity<Employee> updateContactDetails(
             @PathVariable Long id,
-            @RequestBody ContactUpdateRequest contactRequest
+            @Valid @RequestBody ContactUpdateRequest contactRequest
     ) {
         try {
             Employee updatedEmployee = employeeService.updateContactDetails(
