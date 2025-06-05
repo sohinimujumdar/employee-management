@@ -45,10 +45,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/salary").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/employees/*/contact").hasRole("USER")
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .saml2Login(saml -> saml
@@ -56,19 +53,13 @@ public class SecurityConfig {
                         .authenticationConverter(authentication -> {
                             Saml2Authentication samlAuth = (Saml2Authentication) authentication;
                             Saml2AuthenticatedPrincipal principal = (Saml2AuthenticatedPrincipal) samlAuth.getPrincipal();
-
                             String role = principal.getFirstAttribute("role");
-                            if (role == null) {
-                                role = "USER";
-                            }
-
-                            List<GrantedAuthority> authorities = List.of(
-                                    new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
-                            );
-
+                            if (role == null) role = "USER";
+                            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
                             return new Saml2Authentication(principal, samlAuth.getSaml2Response(), authorities);
                         })
-                );
+                )
+                .logout(logout -> logout.permitAll());
 
         return http.build();
     }

@@ -1,11 +1,18 @@
 spring:
   application:
     name: employee-management
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyAutoConfiguration
 
   datasource:
     url: jdbc:postgresql://localhost:5432/employeedb
     username: postgres
     password: sohini
+
+  logging:
+    level:
+      org.springframework.security: DEBUG
 
   jpa:
     hibernate:
@@ -22,7 +29,8 @@ spring:
         registration:
           okta:
             identity-provider:
-              entity-id: http://localhost:8081/login/saml2/sso/okta   # **Must set this**
+              entity-id: "http://localhost:8081/login/saml2/sso/okta"   # **Must set this**
+              sso-url: "http://localhost:8081/login/saml2/sso"
               metadata-uri: "http://localhost:8081/saml2/service-provider-metadata/okta"
               assertion-consumer-service-location: "http://localhost:8081/login/saml2/sso/okta"
             signing:
